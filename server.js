@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const { spawn } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -16,13 +17,13 @@ let botStatus = {
 
 // --- LAUNCH THE PYTHON STACK ---
 
-function launchPythonBot(botKey, scriptPath, tokenName) {
+function launchPythonBot(botKey, scriptName, tokenName) {
+    const scriptPath = path.join(__dirname, scriptName);
     console.log(`[DEPLOYING] Attempting to start Python process for ${botKey} at ${scriptPath}...`);
     
-    // Check if the file exists to avoid ENOENT errors
-    const fs = require('fs');
+    // Check if the file exists in the root
     if (!fs.existsSync(scriptPath)) {
-        console.error(`[CRITICAL] File not found: ${scriptPath}. Check your folder structure!`);
+        console.error(`[CRITICAL] File not found: ${scriptPath}. Ensure it is in the root folder!`);
         return;
     }
 
@@ -31,8 +32,8 @@ function launchPythonBot(botKey, scriptPath, tokenName) {
     botEnv['DISCORD_TOKEN'] = process.env[tokenName];
 
     // Explicitly using 'python3' for Linux/Docker environments
-    const botProcess = spawn('python3', [path.basename(scriptPath)], {
-        cwd: path.dirname(scriptPath),
+    const botProcess = spawn('python3', [scriptName], {
+        cwd: __dirname,
         env: botEnv 
     });
 
@@ -55,15 +56,14 @@ function launchPythonBot(botKey, scriptPath, tokenName) {
     botProcess.on('close', (code) => {
         console.log(`[${botKey.toUpperCase()}] Process exited with code ${code}. Restarting in 5s...`);
         botStatus[botKey] = 'offline';
-        setTimeout(() => launchPythonBot(botKey, scriptPath, tokenName), 5000);
+        setTimeout(() => launchPythonBot(botKey, scriptName, tokenName), 5000);
     });
 }
 
-// Ensure these paths match your actual GitHub structure exactly
-// If the bots are in the root, remove 'bots/oracle/' etc.
-launchPythonBot('oracle', path.join(__dirname, 'bots', 'oracle', 'Astrobot.py'), 'ORACLE_TOKEN');
-launchPythonBot('hyperion', path.join(__dirname, 'bots', 'hyperion', 'chatbot.py'), 'HYPERION_TOKEN');
-launchPythonBot('steve', path.join(__dirname, 'bots', 'steve', 'steve.py'), 'STEVE_TOKEN');
+// Updated to point directly to files in the root folder
+launchPythonBot('oracle', 'Astrobot.py', 'ORACLE_TOKEN');
+launchPythonBot('hyperion', 'chatbot.py', 'HYPERION_TOKEN');
+launchPythonBot('steve', 'steve.py', 'STEVE_TOKEN');
 
 // --- REAL-TIME STATUS API ---
 app.get('/api/status', (req, res) => {
