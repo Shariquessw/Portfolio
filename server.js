@@ -16,20 +16,30 @@ let botStatus = {
 
 // --- LAUNCH THE PYTHON STACK ---
 
-// We added 'tokenName' so the Mothership knows which token belongs to which bot
 function launchPythonBot(botKey, scriptPath, tokenName) {
-    console.log(`[DEPLOYING] Starting Python process for ${botKey}...`);
+    console.log(`[DEPLOYING] Attempting to start Python process for ${botKey} at ${scriptPath}...`);
     
-    // Create a custom environment just for this specific bot
+    // Check if the file exists to avoid ENOENT errors
+    const fs = require('fs');
+    if (!fs.existsSync(scriptPath)) {
+        console.error(`[CRITICAL] File not found: ${scriptPath}. Check your folder structure!`);
+        return;
+    }
+
     const botEnv = Object.assign({}, process.env);
-    
-    // MAGIC HACK: Pass the specific token as standard names so your Python code doesn't break
     botEnv['TOKEN'] = process.env[tokenName];
     botEnv['DISCORD_TOKEN'] = process.env[tokenName];
 
+    // Explicitly using 'python3' for Linux/Docker environments
     const botProcess = spawn('python3', [path.basename(scriptPath)], {
         cwd: path.dirname(scriptPath),
         env: botEnv 
+    });
+
+    // Handle startup errors
+    botProcess.on('error', (err) => {
+        console.error(`[CRITICAL ERROR] Failed to spawn ${botKey}: ${err.message}`);
+        botStatus[botKey] = 'offline';
     });
 
     botStatus[botKey] = 'online';
@@ -43,13 +53,14 @@ function launchPythonBot(botKey, scriptPath, tokenName) {
     });
 
     botProcess.on('close', (code) => {
-        console.log(`[${botKey.toUpperCase()}] Process exited with code ${code}. Restarting...`);
+        console.log(`[${botKey.toUpperCase()}] Process exited with code ${code}. Restarting in 5s...`);
         botStatus[botKey] = 'offline';
         setTimeout(() => launchPythonBot(botKey, scriptPath, tokenName), 5000);
     });
 }
 
-// Fire up all three nodes and map their specific tokens!
+// Ensure these paths match your actual GitHub structure exactly
+// If the bots are in the root, remove 'bots/oracle/' etc.
 launchPythonBot('oracle', path.join(__dirname, 'bots', 'oracle', 'Astrobot.py'), 'ORACLE_TOKEN');
 launchPythonBot('hyperion', path.join(__dirname, 'bots', 'hyperion', 'chatbot.py'), 'HYPERION_TOKEN');
 launchPythonBot('steve', path.join(__dirname, 'bots', 'steve', 'steve.py'), 'STEVE_TOKEN');
