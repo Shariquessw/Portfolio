@@ -1,0 +1,7 @@
+discord.py==2.6.4
+python-dotenv==1.2.1
+groq==0.34.1
+deep-translator==1.11.4
+flask==3.1.2
+requests==2.32.5
+google-genai==2.6.0

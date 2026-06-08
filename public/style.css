@@ -1,0 +1,132 @@
+/* 1. Global Reset & Theme Variables */
+:root {
+    --bg-color: #050505;
+    --card-bg: #121212;
+    --neon-blue: #00f3ff;
+    --neon-pink: #ff00ea;
+    --neon-green: #39ff14;
+    --discord-blue: #5865F2;
+    --text-white: #ffffff;
+    --text-gray: #a0a0a0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-white);
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 2. Header Styles */
+header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+header h1 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    color: var(--text-gray);
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+/* 3. Grid & Layout */
+.portfolio-grid {
+    max-width: 900px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+@media (min-width: 768px) {
+    .portfolio-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .full-width {
+        grid-column: 1 / -1;
+    }
+}
+
+/* 4. Base Card Styling */
+.card {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* 5. Glow Themes (The Neon Effect) */
+.neon-text-blue {
+    text-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+}
+
+.card-green {
+    border: 2px solid var(--neon-green);
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+}
+.card-green:hover {
+    box-shadow: 0 0 20px var(--neon-green), inset 0 0 10px rgba(57, 255, 20, 0.4);
+}
+
+.card-pink {
+    border: 2px solid var(--neon-pink);
+    box-shadow: 0 0 10px rgba(255, 0, 234, 0.2);
+}
+.card-pink:hover {
+    box-shadow: 0 0 20px var(--neon-pink), inset 0 0 10px rgba(255, 0, 234, 0.4);
+}
+
+.card-discord {
+    border: 2px solid var(--discord-blue);
+    text-align: center;
+}
+.card-discord:hover {
+    box-shadow: 0 0 20px var(--discord-blue);
+}
+
+.discord-username {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 15px 0;
+    color: var(--discord-blue);
+}
+
+/* 6. Button Styling */
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 6px;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.btn-green { color: var(--neon-green); border: 2px solid var(--neon-green); }
+.btn-green:hover { background: var(--neon-green); color: #000; }
+
+.btn-pink { color: var(--neon-pink); border: 2px solid var(--neon-pink); }
+.btn-pink:hover { background: var(--neon-pink); color: #000; }
+
+.btn-discord { color: white; background: var(--discord-blue); }
+.btn-discord:hover { opacity: 0.9;}
