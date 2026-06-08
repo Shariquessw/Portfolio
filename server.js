@@ -61,9 +61,9 @@ function launchPythonBot(botKey, scriptName, tokenName) {
 }
 
 // Updated to point directly to files in the root folder
-launchPythonBot('oracle', 'Astrobot.py', 'ORACLE_TOKEN');
-launchPythonBot('hyperion', 'chatbot.py', 'HYPERION_TOKEN');
-launchPythonBot('steve', 'steve.py', 'STEVE_TOKEN');
+launchPythonBot('oracle', 'bots/Oracle/Astrobot.py', 'ORACLE_TOKEN');
+launchPythonBot('hyperion', 'bots/Hyperion/chatbot.py', 'HYPERION_TOKEN');
+launchPythonBot('steve', 'bots/Steve/steve.py', 'STEVE_TOKEN');
 
 // --- REAL-TIME STATUS API ---
 app.get('/api/status', (req, res) => {
