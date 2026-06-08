@@ -27,7 +27,7 @@ function launchPythonBot(botKey, scriptPath, tokenName) {
     botEnv['TOKEN'] = process.env[tokenName];
     botEnv['DISCORD_TOKEN'] = process.env[tokenName];
 
-    const botProcess = spawn('python3', [path.basename(scriptPath)], {
+    const botProcess = spawn('python', [path.basename(scriptPath)], {
         cwd: path.dirname(scriptPath),
         env: botEnv 
     });
